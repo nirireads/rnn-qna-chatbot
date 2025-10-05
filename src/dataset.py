@@ -12,12 +12,13 @@ def tokenize(text):
     text = text.replace('.','')
     text = text.replace(',','')
     text = text.replace('!','')
-    text = text.reokace('"','')
+    text = text.replace('"','')
     tokens = text.split()
     return tokens
 
+
 #build vocabulary from dataframe
-vocab = {'<UNK':0}
+vocab = {'<UNK>':0}
 
 def build_vocab(row):
     #have row['question'] and row['answer']
@@ -29,19 +30,21 @@ def build_vocab(row):
         if token not in vocab:
             vocab[token] = len(vocab)
 
-    # calling build_vocab on each row
-    df.apply(build_vocab, axis=1)
+# calling build_vocab on each row
+df.apply(build_vocab, axis=1)
 
 #convert words to numerical indices
-def text_to_indices(text):
+def text_to_indices(text,vocab):
     indexed_text = []
     tokenized_text = tokenize(text)
-    
+
+    print(f"tokenized_text: {tokenized_text}")    
     for token in tokenized_text:
-        if token in vocab:
+        if(token in vocab):
             indexed_text.append(vocab[token])
         else:
             indexed_text.append(vocab['<UNK>'])
+    print(f"indexed_text: {indexed_text}")
     return indexed_text
 
 
@@ -52,12 +55,12 @@ class QADataset(Dataset):
         self.vocab = vocab
     
     def __len__(self):
-        return len(self.df.shape[0])
+        return self.df.shape[0]
     
     def __getitem__(self, index):
         # convert question and answer to numerical indices 
-        numerical_question = text_to_indices(self.df.iloc[index].question,self.vocab)
-        numerical_answer = text_to_indices(self.df.iloc[index].answer, self.vocab)
+        numerical_question = text_to_indices(self.df.iloc[index]['question'],self.vocab)
+        numerical_answer = text_to_indices(self.df.iloc[index]['answer'], self.vocab)
 
         return torch.tensor(numerical_question), torch.tensor(numerical_answer)
     

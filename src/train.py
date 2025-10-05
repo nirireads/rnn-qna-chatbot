@@ -1,10 +1,13 @@
-from config import LR, EPOCHS
-from src.model import QAModel
+from model import QAModel
 import torch
 from dataset import vocab, dataloader
 
+# Hyperparameters
+LR = 0.001
+EPOCHS = 20
+
 # Initialize model, loss function, and optimizer
-model = QAModel(vocab_size=len(vocab))
+model = QAModel(len(vocab))
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
@@ -15,11 +18,13 @@ for epoch in range(EPOCHS):
     for question, answer in dataloader:
         optimizer.zero_grad()
         output = model(question)
+        # print(f"question: {question} and answer: {answer}")
         loss = criterion(output, answer[0])
+        # print(f"output: {output} and loss: {loss}")
         loss.backward()
         optimizer.step()
 
-        total_loss += loss.item()
+        total_loss = total_loss + loss.item()
     
     print(f'Epoch: {epoch} , Loss: {total_loss}')
 
