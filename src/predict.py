@@ -1,8 +1,10 @@
 import torch
 from src.dataset import text_to_indices, vocab
 from src.model import QAModel
+import os
 
 def load_model(model_path='data/qa_model.pth'):
+    model_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'qa_model.pth')
     model = QAModel(vocab_size=len(vocab))
     model.load_state_dict(torch.load(model_path))
     model.eval() 
