@@ -3,7 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 #load data
-df = pd.read_csv('data/100_Unique_QA_Dataset.csv ')
+df = pd.read_csv('data/100_Unique_QA_Dataset.csv')
 
 #tokenizer function
 def tokenize(text):
