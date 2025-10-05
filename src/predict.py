@@ -1,6 +1,12 @@
-from dataset import text_to_indices, vocab
-from src.model import QAModel
 import torch
+from src.dataset import text_to_indices, vocab
+from src.model import QAModel
+
+def load_model(model_path='data/qa_model.pth'):
+    model = QAModel(vocab_size=len(vocab))
+    model.load_state_dict(torch.load(model_path))
+    model.eval() 
+    return model
 
 def predict(model, question, threshold=0.5):
     #convert question to numerical indices
@@ -9,8 +15,7 @@ def predict(model, question, threshold=0.5):
     #convert to tensor and add batch dimension
     question_tensor = torch.tensor(numerical_question).unsqueeze(0)  # Shape: (1, seq_length)
 
-    #send to model
-    model = QAModel(vocab_size=len(vocab))
+    #model from streamlit app
     output = model(question_tensor)
 
     #apply softmax to get probabilities
@@ -20,8 +25,8 @@ def predict(model, question, threshold=0.5):
     value, index = torch.max(probabilities, dim=1)
 
     if value <threshold:
-        print("Sorry, I don't know the answer to that question.")
+        answer = list(vocab.keys())[index]
+        return f"Sorry, I don't know the answer to that question.?"
     else:
         answer = list(vocab.keys())[index]
-        print(f'Answer: {answer} (Confidence: {value.item():.2f})')
-        
+        return f'{answer} (Confidence: {value.item():.2f})'

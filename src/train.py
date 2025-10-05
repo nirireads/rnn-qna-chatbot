@@ -4,7 +4,7 @@ from dataset import vocab, dataloader
 
 # Hyperparameters
 LR = 0.001
-EPOCHS = 20
+EPOCHS = 50
 
 # Initialize model, loss function, and optimizer
 model = QAModel(len(vocab))
@@ -18,9 +18,7 @@ for epoch in range(EPOCHS):
     for question, answer in dataloader:
         optimizer.zero_grad()
         output = model(question)
-        # print(f"question: {question} and answer: {answer}")
         loss = criterion(output, answer[0])
-        # print(f"output: {output} and loss: {loss}")
         loss.backward()
         optimizer.step()
 

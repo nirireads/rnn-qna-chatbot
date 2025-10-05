@@ -16,7 +16,6 @@ def tokenize(text):
     tokens = text.split()
     return tokens
 
-
 #build vocabulary from dataframe
 vocab = {'<UNK>':0}
 
@@ -38,13 +37,11 @@ def text_to_indices(text,vocab):
     indexed_text = []
     tokenized_text = tokenize(text)
 
-    print(f"tokenized_text: {tokenized_text}")    
     for token in tokenized_text:
         if(token in vocab):
             indexed_text.append(vocab[token])
         else:
             indexed_text.append(vocab['<UNK>'])
-    print(f"indexed_text: {indexed_text}")
     return indexed_text
 
 
